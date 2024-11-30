@@ -163,6 +163,7 @@ PlayerSettings:
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
     Android: com.DefaultCompany.MRRestoreEarth
+    Standalone: com.DefaultCompany.MR-RestoreEarth
   buildNumber:
     Standalone: 0
     VisionOS: 0
@@ -946,11 +947,11 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 0
   windowsGamepadBackendHint: 0
-  cloudProjectId: 
+  cloudProjectId: 93203061-258b-4868-ad09-446e1eca97ba
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: 
-  organizationId: 
+  projectName: MR-RestoreEarth
+  organizationId: unity_ffc967998cb4e9db2e33
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}
