@@ -6,11 +6,11 @@ public class LatchMonster : MonoBehaviour
 {
    
     public GameObject hiddenAsset;
-    public GameObject particleEffectPrefab; // Prefab with particle system attached
-    public Transform metaXRCameraTransform; // Reference to the camera's transform
-    public GameObject mainAsset; // Asset to be cloned to the camera
+    public GameObject particleEffectPrefab; 
+    public Transform metaXRCameraTransform; 
+    public GameObject mainAsset; 
 
-    public Vector3 offset = new Vector3(0, -1.5f, 0); // Customize position offset
+    public Vector3 offset = new Vector3(0, -1.5f, 0); 
 
     private GameObject duplicatedModel;
     private ParticleSystem particleSystemInstance;
@@ -19,7 +19,7 @@ public class LatchMonster : MonoBehaviour
     {
         if (hiddenAsset != null)
         {
-            hiddenAsset.SetActive(false); // Start hidden
+            hiddenAsset.SetActive(false); 
             Debug.Log("Hidden asset set to inactive at Start.");
         }
         else
@@ -33,13 +33,13 @@ public class LatchMonster : MonoBehaviour
         }
         else
         {
-            // Instantiate the particle system but start it disabled
+           
             GameObject instance = Instantiate(particleEffectPrefab);
             particleSystemInstance = instance.GetComponent<ParticleSystem>();
             if (particleSystemInstance != null)
             {
                 particleSystemInstance.Stop();
-                instance.SetActive(false); // Initially deactivate the particle system
+                instance.SetActive(false); 
             }
             else
             {
@@ -56,12 +56,12 @@ public class LatchMonster : MonoBehaviour
             {
                 Debug.Log("Camera proxy collided, processing logic...");
                 hiddenAsset.SetActive(true);
-                PlayParticleEffect(); // Activate the particle effect when collision happens
+                PlayParticleEffect(); 
                 CloneMainAssetToCamera(mainAsset);
 
                 Invoke("HideHiddenAsset", 5f);
                 Debug.Log("Disabling LatchMonster script after execution.");
-                this.enabled = false; // Disable script after execution
+                this.enabled = false; 
             }
         }
     }
@@ -70,7 +70,7 @@ public class LatchMonster : MonoBehaviour
     {
         if (hiddenAsset != null)
         {
-            hiddenAsset.SetActive(false); // Hide the asset
+            hiddenAsset.SetActive(false); 
             Debug.Log("Hidden asset is now hidden.");
         }
     }
@@ -79,8 +79,8 @@ public class LatchMonster : MonoBehaviour
     {
         if (particleSystemInstance != null)
         {
-            particleSystemInstance.gameObject.SetActive(true); // Activate the particle system
-            particleSystemInstance.Play();                     // Play particle effects
+            particleSystemInstance.gameObject.SetActive(true); 
+            particleSystemInstance.Play();                     
             Debug.Log("Particle effect activated.");
         }
     }
