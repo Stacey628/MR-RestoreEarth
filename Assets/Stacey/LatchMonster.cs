@@ -4,47 +4,64 @@ using UnityEngine;
 
 public class LatchMonster : MonoBehaviour
 {
+   
     public GameObject hiddenAsset;
-    public GameObject particleEffectPrefab;
+    public GameObject particleEffectPrefab; // Prefab with particle system attached
     public Transform metaXRCameraTransform; // Reference to the camera's transform
     public GameObject mainAsset; // Asset to be cloned to the camera
 
-    public Vector3 offset = new Vector3(0, -1.5f, 0); // Adjust this to control how 'low' the asset appears
+    public Vector3 offset = new Vector3(0, -1.5f, 0); // Customize position offset
 
     private GameObject duplicatedModel;
+    private ParticleSystem particleSystemInstance;
 
     private void Start()
     {
         if (hiddenAsset != null)
         {
-            hiddenAsset.SetActive(false); // Ensure the hidden asset is inactive at the start
+            hiddenAsset.SetActive(false); // Start hidden
             Debug.Log("Hidden asset set to inactive at Start.");
         }
         else
         {
             Debug.LogError("Hidden asset not assigned in Inspector!");
         }
+
+        if (particleEffectPrefab == null)
+        {
+            Debug.LogError("Particle effect prefab is not assigned!");
+        }
+        else
+        {
+            // Instantiate the particle system but start it disabled
+            GameObject instance = Instantiate(particleEffectPrefab);
+            particleSystemInstance = instance.GetComponent<ParticleSystem>();
+            if (particleSystemInstance != null)
+            {
+                particleSystemInstance.Stop();
+                instance.SetActive(false); // Initially deactivate the particle system
+            }
+            else
+            {
+                Debug.LogError("No ParticleSystem component found on the particleEffectPrefab!");
+            }
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        // Check if the interacting object is the passthrough camera
         if (metaXRCameraTransform != null && other.transform == metaXRCameraTransform)
         {
-            // Ensure the logic is executed only once
             if (hiddenAsset && !hiddenAsset.activeInHierarchy)
             {
                 Debug.Log("Camera proxy collided, processing logic...");
                 hiddenAsset.SetActive(true);
-                TriggerParticleEffect();
+                PlayParticleEffect(); // Activate the particle effect when collision happens
                 CloneMainAssetToCamera(mainAsset);
 
-                // Allow hidden asset to disappear after 5 seconds
                 Invoke("HideHiddenAsset", 5f);
-
-                // Disable the script after execution
                 Debug.Log("Disabling LatchMonster script after execution.");
-                this.enabled = false;
+                this.enabled = false; // Disable script after execution
             }
         }
     }
@@ -53,24 +70,18 @@ public class LatchMonster : MonoBehaviour
     {
         if (hiddenAsset != null)
         {
-            hiddenAsset.SetActive(false); // Hide the hidden asset
+            hiddenAsset.SetActive(false); // Hide the asset
             Debug.Log("Hidden asset is now hidden.");
         }
-
-        // Do not destroy duplicatedModel here
     }
 
-    private void TriggerParticleEffect()
+    private void PlayParticleEffect()
     {
-        if (particleEffectPrefab != null)
+        if (particleSystemInstance != null)
         {
-            // Instantiate particles effect at the current position
-            Instantiate(particleEffectPrefab, transform.position, Quaternion.identity);
-            Debug.Log("Particle effect triggered.");
-        }
-        else
-        {
-            Debug.LogError("Particle effect prefab is null.");
+            particleSystemInstance.gameObject.SetActive(true); // Activate the particle system
+            particleSystemInstance.Play();                     // Play particle effects
+            Debug.Log("Particle effect activated.");
         }
     }
 
@@ -78,9 +89,8 @@ public class LatchMonster : MonoBehaviour
     {
         if (metaXRCameraTransform != null && originalObject != null && duplicatedModel == null)
         {
-            // Clone and attach mainAsset to the camera
             duplicatedModel = Instantiate(originalObject, metaXRCameraTransform);
-            duplicatedModel.transform.localPosition = offset; // Apply offset to position the asset lower
+            duplicatedModel.transform.localPosition = offset;
             duplicatedModel.transform.localRotation = Quaternion.identity;
 
             Debug.Log("Main asset cloned and attached to camera with offset.");
@@ -91,3 +101,5 @@ public class LatchMonster : MonoBehaviour
         }
     }
 }
+
+
