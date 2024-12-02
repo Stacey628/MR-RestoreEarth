@@ -6,18 +6,18 @@ public class LatchMonster : MonoBehaviour
 {
     public GameObject hiddenAsset;
     public GameObject particleEffectPrefab;
-    public Transform metaXRCameraTransform;
-    public GameObject mainAsset;
+    public Transform metaXRCameraTransform; // Reference to the camera's transform
+    public GameObject mainAsset; // Asset to be cloned to the camera
+
+    public Vector3 offset = new Vector3(0, -1.5f, 0); // Adjust this to control how 'low' the asset appears
 
     private GameObject duplicatedModel;
-    private bool isAssetVisible = false;
-    private bool particleEffectTriggered = false;
 
     private void Start()
     {
         if (hiddenAsset != null)
         {
-            hiddenAsset.SetActive(false);
+            hiddenAsset.SetActive(false); // Ensure the hidden asset is inactive at the start
             Debug.Log("Hidden asset set to inactive at Start.");
         }
         else
@@ -28,29 +28,24 @@ public class LatchMonster : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Trigger entered by: " + other.gameObject.name);
+        // Check if the interacting object is the passthrough camera
+        if (metaXRCameraTransform != null && other.transform == metaXRCameraTransform)
+        {
+            // Ensure the logic is executed only once
+            if (hiddenAsset && !hiddenAsset.activeInHierarchy)
+            {
+                Debug.Log("Camera proxy collided, processing logic...");
+                hiddenAsset.SetActive(true);
+                TriggerParticleEffect();
+                CloneMainAssetToCamera(mainAsset);
 
-        if (metaXRCameraTransform != null && other.transform == metaXRCameraTransform && !isAssetVisible)
-        {
-            Debug.Log("Camera proxy collided, processing logic...");
-            ShowHiddenAsset();
-            TriggerParticleEffect(); // Call to trigger the particle effect
-            DuplicateAndAttachToCamera(mainAsset);
-            Invoke("HideHiddenAsset", 5f);
-        }
-    }
+                // Allow hidden asset to disappear after 5 seconds
+                Invoke("HideHiddenAsset", 5f);
 
-    private void ShowHiddenAsset()
-    {
-        if (hiddenAsset != null)
-        {
-            hiddenAsset.SetActive(true);
-            isAssetVisible = true;
-            Debug.Log("Hidden asset is now visible.");
-        }
-        else
-        {
-            Debug.LogError("Hidden asset reference is null.");
+                // Disable the script after execution
+                Debug.Log("Disabling LatchMonster script after execution.");
+                this.enabled = false;
+            }
         }
     }
 
@@ -58,55 +53,41 @@ public class LatchMonster : MonoBehaviour
     {
         if (hiddenAsset != null)
         {
-            hiddenAsset.SetActive(false);
-            isAssetVisible = false;
+            hiddenAsset.SetActive(false); // Hide the hidden asset
             Debug.Log("Hidden asset is now hidden.");
         }
 
-        if (duplicatedModel != null)
-        {
-            Destroy(duplicatedModel);
-            Debug.Log("Duplicated model destroyed.");
-        }
-
-        // Reset flag if we need further testing after hide
-        particleEffectTriggered = false;
+        // Do not destroy duplicatedModel here
     }
 
     private void TriggerParticleEffect()
     {
-        if (!particleEffectTriggered)
+        if (particleEffectPrefab != null)
         {
-            if (particleEffectPrefab != null)
-            {
-                // Instantiate particle effect with no parent to avoid unintended movement.
-                var particleInstance = Instantiate(particleEffectPrefab, transform.position, Quaternion.identity);
-                particleEffectTriggered = true;
-                Debug.Log("Particle effect triggered.");
-
-                // Optionally, clear the particle effect after some time to ensure it's not hanging in the scene forever.
-                Destroy(particleInstance, 3f); // Assumes a lifetime where the particles finish their effect
-            }
-            else
-            {
-                Debug.LogError("Particle effect prefab is null.");
-            }
-        }
-    }
-
-    private void DuplicateAndAttachToCamera(GameObject originalObject)
-    {
-        if (metaXRCameraTransform != null && originalObject != null)
-        {
-            duplicatedModel = Instantiate(originalObject, metaXRCameraTransform);
-            duplicatedModel.transform.localPosition = Vector3.zero;
-            duplicatedModel.transform.localRotation = Quaternion.identity;
-
-            Debug.Log("Duplicated model attached to camera.");
+            // Instantiate particles effect at the current position
+            Instantiate(particleEffectPrefab, transform.position, Quaternion.identity);
+            Debug.Log("Particle effect triggered.");
         }
         else
         {
-            Debug.LogError("Invalid camera transform or original object.");
+            Debug.LogError("Particle effect prefab is null.");
+        }
+    }
+
+    private void CloneMainAssetToCamera(GameObject originalObject)
+    {
+        if (metaXRCameraTransform != null && originalObject != null && duplicatedModel == null)
+        {
+            // Clone and attach mainAsset to the camera
+            duplicatedModel = Instantiate(originalObject, metaXRCameraTransform);
+            duplicatedModel.transform.localPosition = offset; // Apply offset to position the asset lower
+            duplicatedModel.transform.localRotation = Quaternion.identity;
+
+            Debug.Log("Main asset cloned and attached to camera with offset.");
+        }
+        else
+        {
+            Debug.LogError("Invalid setup or main asset already cloned.");
         }
     }
 }
