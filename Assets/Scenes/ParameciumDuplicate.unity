@@ -597,6 +597,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ParameciumPrefab
       objectReference: {fileID: 0}
+    - target: {fileID: 7562998492495935987, guid: 40ddc573d63f1468e9b96f079e2cf56d, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 389f19383885388419d4f1c0bcfce6a7, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
