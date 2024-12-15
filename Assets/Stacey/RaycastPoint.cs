@@ -6,18 +6,18 @@ using UnityEngine.XR;
 
 public class RaycastPoint : MonoBehaviour
 {
-  
-   
     public LineRenderer leftLineRenderer;
     public LineRenderer rightLineRenderer;
     public float maxLength = 10.0f;
-    public Color hoverColor = Color.blue;  // Color to change to on hover
-    public Color originalColor = Color.white;  // Original color to reset to
+    public Color hoverColor = Color.blue;
+    public Color originalColor = Color.white;
 
     private InputDevice leftDevice;
     private InputDevice rightDevice;
 
-    private Image lastHoveredButton = null;  // Store reference to last hovered button's image
+    private Image lastHoveredButton = null;
+
+    private bool isGameplayMode = false; // Flag to determine if in gameplay mode
 
     void Start()
     {
@@ -38,8 +38,16 @@ public class RaycastPoint : MonoBehaviour
 
     void Update()
     {
-        HandleRaycastAndInteraction(leftDevice, leftLineRenderer);
-        HandleRaycastAndInteraction(rightDevice, rightLineRenderer);
+        if (!isGameplayMode)
+        {
+            HandleRaycastAndInteraction(leftDevice, leftLineRenderer);
+            HandleRaycastAndInteraction(rightDevice, rightLineRenderer);
+        }
+        else
+        {
+            // Disable or adjust line renderers for gameplay mode
+            DisableLineRenderers();
+        }
     }
 
     private void HandleRaycastAndInteraction(InputDevice device, LineRenderer lineRenderer)
@@ -60,11 +68,11 @@ public class RaycastPoint : MonoBehaviour
 
                 if (buttonImage != lastHoveredButton)
                 {
-                    ResetButtonColor();  // Reset previous button color
+                    ResetButtonColor();
 
                     if (buttonImage != null)
                     {
-                        buttonImage.color = hoverColor;  // Change color on hover
+                        buttonImage.color = hoverColor;
                         lastHoveredButton = buttonImage;
                     }
                 }
@@ -89,6 +97,25 @@ public class RaycastPoint : MonoBehaviour
             lineRenderer.material.color = Color.red;
             ResetButtonColor();
         }
+    }
+
+    private void DisableLineRenderers()
+    {
+        if (leftLineRenderer != null)
+        {
+            leftLineRenderer.enabled = false;
+        }
+
+        if (rightLineRenderer != null)
+        {
+            rightLineRenderer.enabled = false;
+        }
+    }
+
+    public void EnterGameplayMode()
+    {
+        isGameplayMode = true;
+        Debug.Log("Entering Gameplay Mode: Disabling line renderers.");
     }
 
     private void ResetButtonColor()

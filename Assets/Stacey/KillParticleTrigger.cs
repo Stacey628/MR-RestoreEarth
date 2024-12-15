@@ -14,17 +14,23 @@ public class KillParticleTrigger : MonoBehaviour
     {
         // Create an action map
         actionMap = new InputActionMap("InputActions");
+        Debug.Log("input action detected");
 
         // Add actions with multiple bindings: one for space bar, one for the VR controller X button
         fireAction = actionMap.AddAction("Fire");
         fireAction.AddBinding("<Keyboard>/space");
-        fireAction.AddBinding("<XRController>{LeftHand}/buttonNorth"); // X button on Oculus controllers
+        fireAction.AddBinding("<OculusTouchController>{LeftHand}/buttonWest"); // X button on Oculus controllers
 
         // Subscribe to the action
-        fireAction.performed += ctx => TriggerParticleEffect();
+        fireAction.performed += ctx =>
+        {
+            Debug.Log("Fire action performed!");
+            TriggerParticleEffect();
+        };
 
         // Enable the action map
         actionMap.Enable();
+        Debug.Log("Input action map enabled.");
     }
 
     private void OnDestroy()
@@ -42,14 +48,26 @@ public class KillParticleTrigger : MonoBehaviour
 
     private void TriggerParticleEffect()
     {
-        if (!superPowerUnlocked) return; // Ensure power is only activated if unlocked
+        Debug.Log("TriggerParticleEffect called.");
+
+        if (!superPowerUnlocked)
+        {
+            Debug.LogWarning("Attempted to fire particles, but super power is not unlocked.");
+            return; // Ensure power is only activated if unlocked
+        }
 
         if (killParticleSystem != null)
         {
+            killParticleSystem.Clear();
             killParticleSystem.transform.position = transform.position;
             killParticleSystem.transform.rotation = transform.rotation;
-            Debug.Log("Playing particle system at position: " + transform.position);
             killParticleSystem.Play();
+            Debug.Log("Playing particle system at position: " + transform.position);
+
+            if (!killParticleSystem.isPlaying)
+            {
+                Debug.LogError("Particle System failed to play.");
+            }
         }
         else
         {

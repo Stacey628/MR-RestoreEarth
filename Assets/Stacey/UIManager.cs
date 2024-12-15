@@ -138,7 +138,7 @@ public class UIManager : MonoBehaviour
     private IEnumerator ShowMessageCoroutine()
     {
         powerUpMessage.SetActive(true);
-        yield return new WaitForSeconds(2.5f);  // Display the message for 2.5 seconds
+        yield return new WaitForSeconds(5f);  // Display the message for 5 seconds
         powerUpMessage.SetActive(false);
     }
 }
