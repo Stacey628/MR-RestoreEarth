@@ -19,6 +19,18 @@ public class KillParticleTrigger : MonoBehaviour
         {
             leftController = leftHandDevices[0];
         }
+
+        // Make sure the particle system isn't already playing
+        killparticleSystem.Stop();
+
+        // Check initial state of the button
+        if (leftController.isValid)
+        {
+            bool primaryButtonState = false;
+            leftController.TryGetFeatureValue(CommonUsages.primaryButton, out primaryButtonState);
+            isPrimaryButtonPressed = primaryButtonState;
+            Debug.Log("Initial button state: " + isPrimaryButtonPressed);
+        }
     }
 
     void Update()
@@ -46,6 +58,7 @@ public class KillParticleTrigger : MonoBehaviour
         }
     }
 }
+
 
 
 

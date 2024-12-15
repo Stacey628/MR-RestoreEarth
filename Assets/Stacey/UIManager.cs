@@ -6,58 +6,64 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-   
-    
-    public GameObject startMenu;         // UI panel with "Start" and "Tutorial" buttons
-    public GameObject tutorialMenu;      // UI panel for Tutorial content
-    public GameObject gameplayElements;  // Parent GameObject for the main 3D gameplay elements
+ 
+    public GameObject startMenu;         // Start menu UI panel
+    public GameObject tutorialMenu;      // Tutorial UI panel
+    public GameObject gameplayElements;  // Main 3D gameplay elements
 
-    public Button backButton;            // The "back" button in the tutorial panel
+    public Button nextButton;            // "Next" button
+    public AudioSource audioSource;      // Reference to the AudioSource
+    public AudioClip buttonClickSound;   // The sound clip played for button clicks
 
     void Start()
     {
         ShowStartMenu();
     }
 
+    private void PlayButtonClickSound()
+    {
+        if (audioSource != null && buttonClickSound != null)
+        {
+            audioSource.PlayOneShot(buttonClickSound);
+        }
+    }
+
     public void OnStartButtonClicked()
     {
-        // Hide all UI elements and start the main 3D gameplay
+        PlayButtonClickSound();
         startMenu.SetActive(false);
         tutorialMenu.SetActive(false);
         gameplayElements.SetActive(true);
-        backButton.gameObject.SetActive(false); // Ensure "Next" button is hidden
     }
 
     public void OnTutorialButtonClicked()
     {
-        // Show the Tutorial Menu and enable the Next button
+        PlayButtonClickSound();
         startMenu.SetActive(false);
         tutorialMenu.SetActive(true);
-        backButton.gameObject.SetActive(true); // Enable "Next" button when in tutorial
     }
 
     public void OnBackButtonClicked()
     {
-        // Return to the Start Menu and disable the Next button
+        PlayButtonClickSound();
         tutorialMenu.SetActive(false);
         startMenu.SetActive(true);
-        backButton.gameObject.SetActive(false); // Disable "Next" button
     }
 
     public void ShowStartMenu()
     {
-        // Show start menu and initially disable tutorial and gameplay UI
         startMenu.SetActive(true);
         tutorialMenu.SetActive(false);
         gameplayElements.SetActive(false);
 
-        // Ensure "Next" button is disabled at start
-        if (backButton != null)
+        if (nextButton != null)
         {
-            backButton.gameObject.SetActive(false);
+            nextButton.gameObject.SetActive(false);
         }
     }
 }
+
+
 
 
 

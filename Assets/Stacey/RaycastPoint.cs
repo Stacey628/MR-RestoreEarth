@@ -6,7 +6,7 @@ using UnityEngine.XR;
 
 public class RaycastPoint : MonoBehaviour
 {
-   
+  
     public LineRenderer leftLineRenderer;
     public LineRenderer rightLineRenderer;
     public float maxLength = 10.0f;
@@ -51,10 +51,11 @@ public class RaycastPoint : MonoBehaviour
             Button button = hit.transform.GetComponent<Button>();
             if (button != null)
             {
-                Debug.Log("Button found on: " + hit.transform.name);
+                Debug.Log("UI Button found on: " + hit.transform.name);
                 lineRenderer.material.color = Color.blue;
 
-                if (device.TryGetFeatureValue(CommonUsages.triggerButton, out bool isPressed) && isPressed)
+                // Check for multiple button inputs
+                if (IsAnyButtonPressed(device))
                 {
                     Debug.Log("Button clicked: " + hit.transform.name);
                     button.onClick.Invoke();
@@ -62,7 +63,6 @@ public class RaycastPoint : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("No Button component found on: " + hit.transform.name);
                 lineRenderer.material.color = Color.red;
             }
         }
@@ -72,6 +72,16 @@ public class RaycastPoint : MonoBehaviour
             lineRenderer.material.color = Color.red;
         }
     }
+
+    // Method to check if any significant buttons are pressed
+    private bool IsAnyButtonPressed(InputDevice device)
+    {
+        return device.TryGetFeatureValue(CommonUsages.triggerButton, out bool triggerPressed) && triggerPressed ||
+               device.TryGetFeatureValue(CommonUsages.gripButton, out bool gripPressed) && gripPressed ||
+               device.TryGetFeatureValue(CommonUsages.primaryButton, out bool primaryPressed) && primaryPressed ||
+               device.TryGetFeatureValue(CommonUsages.secondaryButton, out bool secondaryPressed) && secondaryPressed;
+    }
 }
+
 
 
