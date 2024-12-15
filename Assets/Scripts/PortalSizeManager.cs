@@ -1,55 +1,107 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Numerics;
 using UnityEngine;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class PortalSizeManager : MonoBehaviour
 {
-    public float portalSize = 1.0f;
-    public float maxPortalSize = 200.0f;
-    public float expansionRate = 5.0f;
-    public float contractionRate = 2.0f;
-    public float cooldownTime = 10.0f;
+    public float minPortalSize = 0.0f;      // Minimum size of the portal
+    public float maxPortalSize = 5.0f;      // Maximum size of the portal
+    public float waitDuration = 15.0f;     // Time to wait before expansion starts
+    public float expansionDuration = 20.0f; // Time taken to expand to max size
 
-    private float lastAbilityUseTime;
-    private int comboCount = 0;
+    private float elapsedTime = 0.0f;      // Tracks elapsed time
 
-    public GameObject portalObject;
-    public Transform portalCenter;
+    public GameObject portalObject;        // Reference to the portal GameObject
+    public Transform portalCenter;         // Center point of the portal
 
-    // Start is called before the first frame update
-    void Start()
+    // Public property to expose the current portal size
+    public float portalSize
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        // Portal shink
-        if (Time.time - lastAbilityUseTime >=cooldownTime && portalSize > 1.0f)
+        get
         {
-            portalSize = Mathf.Max(portalSize - contractionRate * Time.deltaTime, 1.0f);
-            UpdatePortalVisuals();
+            if (portalObject != null)
+            {
+                return portalObject.transform.localScale.x;
+            }
+            return 0f;
         }
     }
 
-    public void ExpandPortal()
+    void Start()
     {
-        comboCount++;
-        portalSize += expansionRate + comboCount;
-        lastAbilityUseTime = Time.time;
-
-        UpdatePortalVisuals();
+        UpdatePortalSize(minPortalSize); // Set initial portal size
     }
 
-    private void UpdatePortalVisuals()
+    void Update()
     {
-        portalObject.transform.localScale = UnityEngine.Vector3.one * portalSize;
+        elapsedTime += Time.deltaTime;
+
+        if (elapsedTime > waitDuration && elapsedTime <= waitDuration + expansionDuration)
+        {
+            // Normalize time for expansion
+            float t = (elapsedTime - waitDuration) / expansionDuration;
+            float currentSize = Mathf.Lerp(minPortalSize, maxPortalSize, t);
+
+            // Ensure portal size does not exceed maxPortalSize
+            if (currentSize > maxPortalSize)
+            {
+                currentSize = maxPortalSize;
+            }
+
+            // Update portal size during expansion
+            UpdatePortalSize(currentSize);
+        }
+        else if (elapsedTime > waitDuration + expansionDuration)
+        {
+            // After expansion, keep the portal at its maximum size
+            UpdatePortalSize(maxPortalSize);
+        }
     }
 
-    public UnityEngine.Vector3 CalculateCreatureStartPosition()
+    private void UpdatePortalSize(float size)
     {
-        return portalCenter.position + Random.insideUnitSphere * (portalSize / 2);
+        if (portalObject != null)
+        {
+            Vector3 newScale = new Vector3(size, size, portalObject.transform.localScale.z);
+            portalObject.transform.localScale = newScale;
+        }
+    }
+
+    public Vector3 CalculateCreatureStartPosition()
+    {
+        float currentSize = portalSize;
+        // Generate a random position within the portal's bounds
+        Vector3 randomPosition = Random.insideUnitSphere * (currentSize / 2);
+        randomPosition.z = 0; // Flatten on the Z-axis if the portal is a 2D plane
+        return portalCenter.position + randomPosition;
+    }
+
+    // Debug visualization in the editor
+    private void OnDrawGizmos()
+    {
+        if (portalCenter != null)
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireSphere(portalCenter.position, portalSize / 2);
+        }
     }
 }
+
+#if UNITY_EDITOR
+// Custom Editor to display runtime portal size in the inspector
+[CustomEditor(typeof(PortalSizeManager))]
+public class PortalSizeManagerEditor : Editor
+{
+    public override void OnInspectorGUI()
+    {
+        DrawDefaultInspector();
+
+        PortalSizeManager manager = (PortalSizeManager)target;
+        EditorGUILayout.LabelField("Current Portal Size", manager.portalSize.ToString("F2"));
+    }
+}
+#endif
