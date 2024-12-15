@@ -1374,8 +1374,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 0.99999994, z: 1.0000138}
+  m_Center: {x: 0, y: 0, z: 0.00000691216}
 --- !u!1 &192458620
 GameObject:
   m_ObjectHideFlags: 0
@@ -2350,7 +2350,7 @@ LineRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.114032745
+        value: 0.05263138
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -2922,8 +2922,8 @@ LineRenderer:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0
-        value: 0.12280655
+        time: 0.0037231445
+        value: 0.05263138
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -22957,9 +22957,10 @@ MonoBehaviour:
   startMenu: {fileID: 1917992292}
   tutorialMenu: {fileID: 115579135}
   gameplayElements: {fileID: 152659785}
-  nextButton: {fileID: 1845947758}
+  startButton: {fileID: 191394166}
+  tutorialButton: {fileID: 1982697078}
+  backButton: {fileID: 1845947758}
   audioSource: {fileID: 461993076}
-  buttonClickSound: {fileID: 8300000, guid: b4b0c60ca396c4800a93053c1c99c027, type: 3}
 --- !u!4 &1287131165
 Transform:
   m_ObjectHideFlags: 0
