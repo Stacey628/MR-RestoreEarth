@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 public class UIManager : MonoBehaviour
 {
-
     public GameObject startMenu;         // Start Menu panel
     public GameObject tutorialMenu;      // Tutorial panel
     public GameObject gameplayElements;  // Main 3D gameplay parent object
@@ -17,38 +17,39 @@ public class UIManager : MonoBehaviour
 
     public GameObject powerUpMessage;    // UI element for power-up message
 
+    private InputAction simulateStartButton;
+    private InputAction simulateTutorialButton;
+    private InputAction simulateBackButton;
+
+    private void Awake()
+    {
+        // Initialize input actions for simulation
+        var inputMap = new InputActionMap("UI");
+
+        simulateStartButton = inputMap.AddAction("SimulateStart", binding: "<Keyboard>/s");
+        simulateStartButton.performed += ctx => OnStartButtonClicked();
+
+        simulateTutorialButton = inputMap.AddAction("SimulateTutorial", binding: "<Keyboard>/t");
+        simulateTutorialButton.performed += ctx => OnTutorialButtonClicked();
+
+        simulateBackButton = inputMap.AddAction("SimulateBack", binding: "<Keyboard>/b");
+        simulateBackButton.performed += ctx => OnBackButtonClicked();
+
+        inputMap.Enable();
+    }
+
+    private void OnDestroy()
+    {
+        // Cleanup input action subscriptions
+        simulateStartButton.performed -= ctx => OnStartButtonClicked();
+        simulateTutorialButton.performed -= ctx => OnTutorialButtonClicked();
+        simulateBackButton.performed -= ctx => OnBackButtonClicked();
+    }
+
     private void Start()
     {
         ShowStartMenu();  // Initialize with the start menu visible
         InitializeUIElements();
-    }
-
-    private void Update()
-    {
-#if UNITY_EDITOR
-        CheckForSimulatedInput();
-#endif
-    }
-
-    private void CheckForSimulatedInput()
-    {
-        if (Input.GetKeyDown(KeyCode.S)) // Simulate start button click
-        {
-            Debug.Log("Simulating Start Button Press");
-            OnStartButtonClicked();
-        }
-
-        if (Input.GetKeyDown(KeyCode.T)) // Simulate tutorial button click
-        {
-            Debug.Log("Simulating Tutorial Button Press");
-            OnTutorialButtonClicked();
-        }
-
-        if (Input.GetKeyDown(KeyCode.B)) // Simulate back button click
-        {
-            Debug.Log("Simulating Back Button Press");
-            OnBackButtonClicked();
-        }
     }
 
     private void InitializeUIElements()
@@ -141,7 +142,6 @@ public class UIManager : MonoBehaviour
         powerUpMessage.SetActive(false);
     }
 }
-
 
 
 
