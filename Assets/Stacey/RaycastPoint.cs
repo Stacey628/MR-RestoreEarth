@@ -7,12 +7,17 @@ using UnityEngine.XR;
 public class RaycastPoint : MonoBehaviour
 {
   
+   
     public LineRenderer leftLineRenderer;
     public LineRenderer rightLineRenderer;
     public float maxLength = 10.0f;
+    public Color hoverColor = Color.blue;  // Color to change to on hover
+    public Color originalColor = Color.white;  // Original color to reset to
 
     private InputDevice leftDevice;
     private InputDevice rightDevice;
+
+    private Image lastHoveredButton = null;  // Store reference to last hovered button's image
 
     void Start()
     {
@@ -51,37 +56,51 @@ public class RaycastPoint : MonoBehaviour
             Button button = hit.transform.GetComponent<Button>();
             if (button != null)
             {
-                Debug.Log("UI Button found on: " + hit.transform.name);
-                lineRenderer.material.color = Color.blue;
+                Image buttonImage = button.GetComponent<Image>();
 
-                // Check for multiple button inputs
-                if (IsAnyButtonPressed(device))
+                if (buttonImage != lastHoveredButton)
                 {
-                    Debug.Log("Button clicked: " + hit.transform.name);
+                    ResetButtonColor();  // Reset previous button color
+
+                    if (buttonImage != null)
+                    {
+                        buttonImage.color = hoverColor;  // Change color on hover
+                        lastHoveredButton = buttonImage;
+                    }
+                }
+
+                lineRenderer.material.color = Color.green;
+
+                if (device.TryGetFeatureValue(CommonUsages.triggerButton, out bool isPressed) && isPressed)
+                {
+                    Debug.Log("Clicked on Button: " + hit.transform.name);
                     button.onClick.Invoke();
                 }
             }
             else
             {
                 lineRenderer.material.color = Color.red;
+                ResetButtonColor();
             }
         }
         else
         {
             lineRenderer.SetPosition(1, startPosition + direction * maxLength);
             lineRenderer.material.color = Color.red;
+            ResetButtonColor();
         }
     }
 
-    // Method to check if any significant buttons are pressed
-    private bool IsAnyButtonPressed(InputDevice device)
+    private void ResetButtonColor()
     {
-        return device.TryGetFeatureValue(CommonUsages.triggerButton, out bool triggerPressed) && triggerPressed ||
-               device.TryGetFeatureValue(CommonUsages.gripButton, out bool gripPressed) && gripPressed ||
-               device.TryGetFeatureValue(CommonUsages.primaryButton, out bool primaryPressed) && primaryPressed ||
-               device.TryGetFeatureValue(CommonUsages.secondaryButton, out bool secondaryPressed) && secondaryPressed;
+        if (lastHoveredButton != null)
+        {
+            lastHoveredButton.color = originalColor;
+            lastHoveredButton = null;
+        }
     }
 }
+
 
 
 
