@@ -522,7 +522,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eeaa367a6cdbb45d18aec94242f01056, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  killparticleSystem: {fileID: 909715339}
+  killParticleSystem: {fileID: 909715339}
 --- !u!1 &77715353
 GameObject:
   m_ObjectHideFlags: 0

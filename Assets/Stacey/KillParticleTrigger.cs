@@ -1,92 +1,55 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR;
+using UnityEngine.InputSystem;
 
 public class KillParticleTrigger : MonoBehaviour
 {
-    public ParticleSystem killparticleSystem;
-    private InputDevice leftController;
-    private bool isPrimaryButtonPressed = false;
+    public ParticleSystem killParticleSystem;
+    private InputActionMap actionMap;
+    private InputAction fireAction;
     private bool superPowerUnlocked = false; // Track whether the power is available
 
-    void Start()
+    private void Awake()
     {
-        // Improved approach to finding and validating the left controller
-        List<InputDevice> devices = new List<InputDevice>();
-        InputDevices.GetDevicesWithCharacteristics(InputDeviceCharacteristics.Left | InputDeviceCharacteristics.Controller, devices);
+        // Create an action map
+        actionMap = new InputActionMap("InputActions");
 
-        if (devices.Count > 0)
-        {
-            leftController = devices[0];
-            Debug.Log("Left controller found: " + leftController.name);
-        }
-        else
-        {
-            Debug.LogWarning("Left controller not found.");
-        }
+        // Add actions with multiple bindings: one for space bar, one for the VR controller X button
+        fireAction = actionMap.AddAction("Fire");
+        fireAction.AddBinding("<Keyboard>/space");
+        fireAction.AddBinding("<XRController>{LeftHand}/buttonNorth"); // X button on Oculus controllers
 
-        // Optionally log all available devices for further debugging
-        foreach (var device in devices)
-        {
-            Debug.Log("Found device: " + device.name + " with characteristics: " + device.characteristics);
-        }
+        // Subscribe to the action
+        fireAction.performed += ctx => TriggerParticleEffect();
+
+        // Enable the action map
+        actionMap.Enable();
+    }
+
+    private void OnDestroy()
+    {
+        // Unsubscribe to prevent memory leaks
+        fireAction.performed -= ctx => TriggerParticleEffect();
     }
 
     public void EnableSuperPower()
     {
         superPowerUnlocked = true;
         Debug.Log("Super power enabled.");
-        DisplayUIMessage(); // Show the UI message
-    }
-
-    void Update()
-    {
-#if UNITY_EDITOR
-        // Simulate X button press in Unity Editor
-        if (superPowerUnlocked && Input.GetKeyDown(KeyCode.X))
-        {
-            Debug.Log("Simulating X button press to shoot particles");
-            TriggerParticleEffect();
-        }
-#endif
-
-        // Ensure superpower is unlocked before performing actions
-        if (!superPowerUnlocked) return;
-
-        // Attempt to recover controller if it's not valid
-        if (!leftController.isValid)
-        {
-            Debug.LogWarning("Left controller is not valid. Retrying device detection.");
-            Start(); // Re-attempt to find left controller
-            return; // Exit Update loop early if controller not found
-        }
-
-        if (leftController.isValid)
-        {
-            bool primaryButtonState = false;
-
-            if (leftController.TryGetFeatureValue(CommonUsages.primaryButton, out primaryButtonState))
-            {
-                if (primaryButtonState && !isPrimaryButtonPressed)
-                {
-                    Debug.Log("Primary button pressed on left controller.");
-                    TriggerParticleEffect();
-                }
-
-                isPrimaryButtonPressed = primaryButtonState;
-            }
-        }
+        DisplayUIMessage();
     }
 
     private void TriggerParticleEffect()
     {
-        if (killparticleSystem != null)
+        if (!superPowerUnlocked) return; // Ensure power is only activated if unlocked
+
+        if (killParticleSystem != null)
         {
-            killparticleSystem.transform.position = transform.position;
-            killparticleSystem.transform.rotation = transform.rotation;
+            killParticleSystem.transform.position = transform.position;
+            killParticleSystem.transform.rotation = transform.rotation;
             Debug.Log("Playing particle system at position: " + transform.position);
-            killparticleSystem.Play();
+            killParticleSystem.Play();
         }
         else
         {
@@ -108,5 +71,3 @@ public class KillParticleTrigger : MonoBehaviour
         }
     }
 }
-
-

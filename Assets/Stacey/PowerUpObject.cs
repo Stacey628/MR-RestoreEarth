@@ -1,29 +1,45 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PowerUpObject : MonoBehaviour
 {
-    private void OnTriggerEnter(Collider other)
+    private InputActionMap actionMap;
+    private InputAction xButtonOrKeyAction;
+
+    private void Awake()
     {
-        if (other.CompareTag("Player")) // Ensure the collided object is the player
-        {
-            ActivatePowerUp();
-            Destroy(gameObject); // Optionally destroy the power-up object after collision
-        }
+        // Create an action map
+        actionMap = new InputActionMap("InputActions");
+
+        // Add an action with multiple bindings: one for keyboard and one for the VR controller
+        xButtonOrKeyAction = actionMap.AddAction("ActivatePower", binding: "<Keyboard>/x");
+
+        // Additional binding for the X button on the left-hand VR controller
+        xButtonOrKeyAction.AddBinding("<XRController>{LeftHand}/buttonNorth");
+
+        // Subscribe to the action
+        xButtonOrKeyAction.performed += ctx => ActivatePowerUp();
+
+        // Enable the action map
+        actionMap.Enable();
     }
 
-#if UNITY_EDITOR
-    private void Update()
+    private void OnDestroy()
     {
-        // Simulate pressing the X button in the Editor (can trigger the power-up for testing)
-        if (Input.GetKeyDown(KeyCode.X))
+        // Unsubscribe to prevent memory leaks
+        xButtonOrKeyAction.performed -= ctx => ActivatePowerUp();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
         {
-            Debug.Log("Simulating X button press in Editor for power-up activation.");
             ActivatePowerUp();
+            Destroy(gameObject);
         }
     }
-#endif
 
     private void ActivatePowerUp()
     {
@@ -35,10 +51,10 @@ public class PowerUpObject : MonoBehaviour
         }
 
         // Show the power-up UI message
-        var UIManager = FindObjectOfType<UIManager>();
-        if (UIManager != null)
+        var uiManager = FindObjectOfType<UIManager>();
+        if (uiManager != null)
         {
-            UIManager.ShowPowerUpMessage();
+            uiManager.ShowPowerUpMessage();
         }
     }
 }
