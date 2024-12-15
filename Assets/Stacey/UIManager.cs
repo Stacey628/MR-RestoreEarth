@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-
 public class UIManager : MonoBehaviour
 {
 
@@ -22,6 +21,34 @@ public class UIManager : MonoBehaviour
     {
         ShowStartMenu();  // Initialize with the start menu visible
         InitializeUIElements();
+    }
+
+    private void Update()
+    {
+#if UNITY_EDITOR
+        CheckForSimulatedInput();
+#endif
+    }
+
+    private void CheckForSimulatedInput()
+    {
+        if (Input.GetKeyDown(KeyCode.S)) // Simulate start button click
+        {
+            Debug.Log("Simulating Start Button Press");
+            OnStartButtonClicked();
+        }
+
+        if (Input.GetKeyDown(KeyCode.T)) // Simulate tutorial button click
+        {
+            Debug.Log("Simulating Tutorial Button Press");
+            OnTutorialButtonClicked();
+        }
+
+        if (Input.GetKeyDown(KeyCode.B)) // Simulate back button click
+        {
+            Debug.Log("Simulating Back Button Press");
+            OnBackButtonClicked();
+        }
     }
 
     private void InitializeUIElements()
@@ -114,8 +141,6 @@ public class UIManager : MonoBehaviour
         powerUpMessage.SetActive(false);
     }
 }
-
-
 
 
 
