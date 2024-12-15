@@ -121,30 +121,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ada37c0aa5a804be6a33f0eb8661a11e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flightCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
+  playerTransform: {fileID: 0}
+  minDistanceToPlayer: 3
+  maxDistanceToPlayer: 5
 --- !u!54 &2560300516375784568
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -179,7 +158,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3957238381087243613}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 05890bfcc4a47417c83704cb0fceb2aa, type: 3}
   m_Name: 
@@ -197,6 +176,18 @@ PrefabInstance:
     - target: {fileID: 160652566337436775, guid: 22a77e04a6c2c4ee78c08ef2f19c25d5, type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1944416664784850075, guid: 22a77e04a6c2c4ee78c08ef2f19c25d5, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 1944416664784850075, guid: 22a77e04a6c2c4ee78c08ef2f19c25d5, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 1944416664784850075, guid: 22a77e04a6c2c4ee78c08ef2f19c25d5, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 2899319196070111412, guid: 22a77e04a6c2c4ee78c08ef2f19c25d5, type: 3}
       propertyPath: m_LocalPosition.x
@@ -266,6 +257,10 @@ PrefabInstance:
       propertyPath: m_IsTrigger
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6857534613872343308, guid: 22a77e04a6c2c4ee78c08ef2f19c25d5, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b250d82d92d104694ae719922298b550, type: 2}
     - target: {fileID: 7167006343734026087, guid: 22a77e04a6c2c4ee78c08ef2f19c25d5, type: 3}
       propertyPath: m_Name
       value: JellyfishPrefab

@@ -9,6 +9,7 @@ public class CreatureManager : MonoBehaviour
     public PortalSizeManager portalManager;
     public float spawnInterval = 10.0f;
     public float playerProximityRange = 2.0f;
+    public string objectTag = "Interactable";
 
     private float lastSpawnTime;
     private Transform playerTransform;
@@ -39,6 +40,11 @@ public class CreatureManager : MonoBehaviour
         currentCreatureIndex = (currentCreatureIndex + 1) % creaturePrefabs.Length;
 
         GameObject newCreature = Instantiate(creaturePrefab, portalCenter, Quaternion.identity);
+        if (!string.IsNullOrEmpty(objectTag))
+            {
+                newCreature.tag = objectTag;
+                Debug.Log($"Generated object tagged as: {objectTag}");
+            }
         
         CreatureFlyOut flyOutScript = newCreature.GetComponent<CreatureFlyOut>();
         flyOutScript.Initialize(portalCenter, portalSize);
