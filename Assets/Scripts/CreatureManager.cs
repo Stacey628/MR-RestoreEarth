@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Oculus.Interaction.Input;
 using UnityEngine;
 
 public class CreatureManager : MonoBehaviour
@@ -31,25 +32,49 @@ public class CreatureManager : MonoBehaviour
 
     void SpawnCreature()
     {
+        Vector3 portalCenter = portalManager.portalCenter.position;
+        float portalSize = portalManager.portalSize;
+
         GameObject creaturePrefab = creaturePrefabs[currentCreatureIndex];
-        Vector3 spawnPosition = portalManager.CalculateCreatureStartPosition();
-        GameObject newCreature = Instantiate(creaturePrefab, spawnPosition, Quaternion.identity);
+        currentCreatureIndex = (currentCreatureIndex + 1) % creaturePrefabs.Length;
+
+        GameObject newCreature = Instantiate(creaturePrefab, portalCenter, Quaternion.identity);
         
         CreatureFlyOut flyOutScript = newCreature.GetComponent<CreatureFlyOut>();
-        flyOutScript.Initialize(portalManager.portalCenter.position, portalManager.portalSize);
-        currentCreatureIndex = (currentCreatureIndex + 1) % creaturePrefabs.Length;
+        flyOutScript.Initialize(portalCenter, portalSize);
+        
     }
 
-    void OnTriggerEnter(Collider other)
+    void CheckPlayerInteraction()
     {
-        if (other.CompareTag("Creature"))
+        GameObject[] creatures = GameObject.FindGameObjectsWithTag("Creature");
+
+        foreach (GameObject creature in creatures)
         {
-            float distanceToPlayer = Vector3.Distance(playerTransform.position, other.transform.position);
+            float distanceToPlayer = Vector3.Distance(playerTransform.position, creature.transform.position);
             if (distanceToPlayer <= playerProximityRange)
             {
-                Debug.Log($"Player gets {other.name} superpower!");
-                Destroy(other.gameObject);
+                if (OVRInput.GetDown(OVRInput.Button.Two))
+                {
+                    Debug.Log("Player clicked creature");
+                    HandlePlayerInteraction(creature);
+                }
             }
+        }
+    }
+
+    void HandlePlayerInteraction(GameObject creature)
+    {
+        MonoBehaviour ability = creature.GetComponent<MonoBehaviour>();
+        if (ability != null)
+        {
+            Debug.Log($"get {ability.GetType().Name} ability");
+            if (ability is EnlargeAbility)
+            {
+                (ability as EnlargeAbility).Execute(gameObject, portalManager.portalSize);
+            }
+
+            Destroy(creature);
         }
     }
 }
