@@ -5,13 +5,14 @@ using UnityEngine.XR;
 
 public class KillParticleTrigger : MonoBehaviour
 {
+    
     public ParticleSystem killparticleSystem;
     private InputDevice leftController;
     private bool isPrimaryButtonPressed = false;
+    private bool superPowerUnlocked = false; // Track whether the power is available
 
     void Start()
     {
-        // Initialize the controller (left hand in this setup)
         var leftHandDevices = new List<InputDevice>();
         InputDevices.GetDevicesAtXRNode(XRNode.LeftHand, leftHandDevices);
 
@@ -19,44 +20,45 @@ public class KillParticleTrigger : MonoBehaviour
         {
             leftController = leftHandDevices[0];
         }
+    }
 
-        // Make sure the particle system isn't already playing
-        killparticleSystem.Stop();
-
-        // Check initial state of the button
-        if (leftController.isValid)
-        {
-            bool primaryButtonState = false;
-            leftController.TryGetFeatureValue(CommonUsages.primaryButton, out primaryButtonState);
-            isPrimaryButtonPressed = primaryButtonState;
-            Debug.Log("Initial button state: " + isPrimaryButtonPressed);
-        }
+    public void EnableSuperPower()
+    {
+        superPowerUnlocked = true;
+        DisplayUIMessage(); // Show the UI message
     }
 
     void Update()
     {
-        // Check if the device is valid and check button press state
+        if (!superPowerUnlocked) return; // Exit if power not unlocked
+
         if (leftController.isValid)
         {
             bool primaryButtonState = false;
 
-            // This checks if the primary button (X button for left hand) is pressed
             if (leftController.TryGetFeatureValue(CommonUsages.primaryButton, out primaryButtonState))
             {
-                // Trigger the particle system when the X button is pressed
                 if (primaryButtonState && !isPrimaryButtonPressed)
                 {
-                    // Update the particle system's position to match the controller and play it
                     killparticleSystem.transform.position = transform.position;
                     killparticleSystem.transform.rotation = transform.rotation;
                     killparticleSystem.Play();
                 }
 
-                // Update the button press state
                 isPrimaryButtonPressed = primaryButtonState;
             }
         }
     }
+
+    private void DisplayUIMessage()
+    {
+        UIManager uiController = FindObjectOfType<UIManager>();
+        if (uiController != null)
+        {
+            uiController.ShowPowerUpMessage();
+        }
+    }
+
 }
 
 
