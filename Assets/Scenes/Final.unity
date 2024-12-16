@@ -14211,7 +14211,7 @@ MonoBehaviour:
   minScale: {x: 4, y: 8, z: 2}
   scaleButton: 15
   playerTransform: {fileID: 718827319}
-  triggerDistance: 2
+  triggerDistance: 1.5
   sceneName: universe
 --- !u!135 &632017774
 SphereCollider:
@@ -14330,10 +14330,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scaleFactor: 0.1
-  maxScale: {x: 50, y: 100, z: 25}
+  maxScale: {x: 100, y: 100, z: 100}
   minScale: {x: 1.400764, y: 2.490513, z: 0.684332}
-  playerTransform: {fileID: 718827319}
-  triggerDistance: 1.5
+  playerTransform: {fileID: 729403864}
+  triggerDistance: 3
   sceneName: universe
   particle1: {fileID: 514828296}
   particle2: {fileID: 659665317}
