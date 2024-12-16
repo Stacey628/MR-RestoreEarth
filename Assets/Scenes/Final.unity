@@ -14341,7 +14341,7 @@ MonoBehaviour:
   scaleFactor: 0.2
   maxScale: {x: 300, y: 600, z: 150}
   minScale: {x: 4, y: 8, z: 2}
-  scaleButton: -1
+  scaleButton: 15
   playerTransform: {fileID: 718827319}
   triggerDistance: 2
   sceneName: universe
