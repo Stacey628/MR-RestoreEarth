@@ -11907,7 +11907,7 @@ ParticleSystem:
         m_NumAlphaKeys: 2
     range: {x: 0, y: 1}
   CollisionModule:
-    enabled: 0
+    enabled: 1
     serializedVersion: 4
     type: 1
     collisionMode: 0
@@ -14333,24 +14333,12 @@ MonoBehaviour:
   maxScale: {x: 100, y: 100, z: 100}
   minScale: {x: 1.400764, y: 2.490513, z: 0.684332}
   playerTransform: {fileID: 729403864}
-  triggerDistance: 3.75
+  triggerDistance: 3.8
   sceneName: universe
   particle1: {fileID: 514828296}
   particle2: {fileID: 659665317}
   particle3: {fileID: 909715339}
   particle4: {fileID: 659665317}
-  affectedPrefabsA:
-  - {fileID: 1228827592}
-  - {fileID: 1100530714}
-  affectedPrefabsB:
-  - {fileID: 1100530714}
-  - {fileID: 235044116}
-  affectedPrefabsX:
-  - {fileID: 235044116}
-  - {fileID: 1100530714}
-  affectedPrefabsY:
-  - {fileID: 1228827592}
-  - {fileID: 235044116}
 --- !u!1 &632554505
 GameObject:
   m_ObjectHideFlags: 0
@@ -18274,7 +18262,7 @@ ParticleSystem:
         m_NumAlphaKeys: 2
     range: {x: 0, y: 1}
   CollisionModule:
-    enabled: 0
+    enabled: 1
     serializedVersion: 4
     type: 1
     collisionMode: 0
@@ -21292,7 +21280,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 5
+      scalar: 7
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -21463,7 +21451,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.4
+      scalar: 0.8
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -24853,7 +24841,7 @@ ParticleSystem:
         m_NumAlphaKeys: 2
     range: {x: 0, y: 1}
   CollisionModule:
-    enabled: 0
+    enabled: 1
     serializedVersion: 4
     type: 1
     collisionMode: 0

@@ -15,7 +15,7 @@ public class CreatureFlyOut : MonoBehaviour
 
     public Transform playerTransform; // 玩家 Transform
     public float minDistanceToPlayer = 0.0f; // Creature 到玩家的最小距离
-    public float maxDistanceToPlayer = 1.0f; // Creature 到玩家的最大距离
+    public float maxDistanceToPlayer = 5.0f; // Creature 到玩家的最大距离
 
     public void Initialize(Vector3 portalCenter, float portalSize)
     {
