@@ -20,17 +20,35 @@ public class PortalAndParticleController : MonoBehaviour
     public ParticleSystem particle3; // For LeftHand primaryButton (X)
     public ParticleSystem particle4; // For LeftHand secondaryButton (Y)
 
+    [Header("Sound Settings")]
+    public AudioClip soundA;
+    public AudioClip soundB;
+    public AudioClip soundX;
+    public AudioClip soundY;
+    private AudioSource audioSourceA;
+    private AudioSource audioSourceB;
+    private AudioSource audioSourceX;
+    private AudioSource audioSourceY;
+
     [Header("Prefab Settings")]
     public List<GameObject> affectedPrefabsA; // For RightHand primaryButton (A)
     public List<GameObject> affectedPrefabsB; // For RightHand secondaryButton (B)
     public List<GameObject> affectedPrefabsX; // For LeftHand primaryButton (X)
     public List<GameObject> affectedPrefabsY; // For LeftHand secondaryButton (Y)
 
-    // Button state cache
     private bool leftPrimaryButtonLastState = false;
     private bool leftSecondaryButtonLastState = false;
     private bool rightPrimaryButtonLastState = false;
     private bool rightSecondaryButtonLastState = false;
+
+    void Start()
+    {
+        // Add separate AudioSources
+        audioSourceA = gameObject.AddComponent<AudioSource>();
+        audioSourceB = gameObject.AddComponent<AudioSource>();
+        audioSourceX = gameObject.AddComponent<AudioSource>();
+        audioSourceY = gameObject.AddComponent<AudioSource>();
+    }
 
     void Update()
     {
@@ -54,7 +72,7 @@ public class PortalAndParticleController : MonoBehaviour
             {
                 if (primaryButtonValue && !leftPrimaryButtonLastState)
                 {
-                    OnButtonPressed(particle3);
+                    OnButtonPressed(particle3, audioSourceX, soundX);
                     ApplyRandomEffectToPrefabs(affectedPrefabsX); // X button
                 }
                 leftPrimaryButtonLastState = primaryButtonValue;
@@ -64,7 +82,7 @@ public class PortalAndParticleController : MonoBehaviour
             {
                 if (secondaryButtonValue && !leftSecondaryButtonLastState)
                 {
-                    OnButtonPressed(particle4);
+                    OnButtonPressed(particle4, audioSourceY, soundY);
                     ApplyRandomEffectToPrefabs(affectedPrefabsY); // Y button
                 }
                 leftSecondaryButtonLastState = secondaryButtonValue;
@@ -78,7 +96,7 @@ public class PortalAndParticleController : MonoBehaviour
             {
                 if (primaryButtonValue && !rightPrimaryButtonLastState)
                 {
-                    OnButtonPressed(particle1);
+                    OnButtonPressed(particle1, audioSourceA, soundA);
                     ApplyRandomEffectToPrefabs(affectedPrefabsA); // A button
                 }
                 rightPrimaryButtonLastState = primaryButtonValue;
@@ -88,7 +106,7 @@ public class PortalAndParticleController : MonoBehaviour
             {
                 if (secondaryButtonValue && !rightSecondaryButtonLastState)
                 {
-                    OnButtonPressed(particle2);
+                    OnButtonPressed(particle2, audioSourceB, soundB);
                     ApplyRandomEffectToPrefabs(affectedPrefabsB); // B button
                 }
                 rightSecondaryButtonLastState = secondaryButtonValue;
@@ -96,7 +114,7 @@ public class PortalAndParticleController : MonoBehaviour
         }
     }
 
-    private void OnButtonPressed(ParticleSystem particle)
+    private void OnButtonPressed(ParticleSystem particle, AudioSource audioSource, AudioClip sound)
     {
         if (particle != null)
         {
@@ -107,33 +125,38 @@ public class PortalAndParticleController : MonoBehaviour
             Debug.LogWarning("Particle system not assigned!");
         }
 
+        if (audioSource != null && sound != null)
+        {
+            audioSource.PlayOneShot(sound);
+        }
+        else
+        {
+            Debug.LogWarning("AudioSource or Sound clip not assigned!");
+        }
+
         ScalePortal(scaleFactor);
     }
 
     private void ApplyRandomEffectToPrefabs(List<GameObject> prefabs)
     {
-        // Apply random effect to 3D prefabs
         foreach (var prefab in prefabs)
         {
             if (prefab != null)
             {
-                int outcome = Random.Range(0, 3); // 0 = disappear, 1 = duplicate, 2 = scale and rotate
+                int outcome = Random.Range(0, 3);
 
                 switch (outcome)
                 {
                     case 0:
-                        // Disappear
                         Destroy(prefab);
                         Debug.Log("Destroyed: " + prefab.name);
                         break;
                     case 1:
-                        // Duplicate
-                        Instantiate(prefab, prefab.transform.position + Vector3.right * 1.5f, Quaternion.identity);
+                        Instantiate(prefab, prefab.transform.position + Vector3.right * 2f, Quaternion.identity);
                         Debug.Log("Duplicated: " + prefab.name);
                         break;
                     case 2:
-                        // Scale up and rotate
-                        prefab.transform.localScale *= 1.5f;
+                        prefab.transform.localScale *= 2f;
                         prefab.transform.Rotate(Vector3.up, 180);
                         Debug.Log("Scaled and Rotated: " + prefab.name);
                         break;
