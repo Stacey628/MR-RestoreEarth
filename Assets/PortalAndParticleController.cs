@@ -1,8 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.InputSystem;
 using UnityEngine.XR;
 using System.Linq;
 
@@ -22,7 +20,13 @@ public class PortalAndParticleController : MonoBehaviour
     public ParticleSystem particle3; // For LeftHand primaryButton (X)
     public ParticleSystem particle4; // For LeftHand secondaryButton (Y)
 
-    // 按键状态缓存
+    [Header("Prefab Settings")]
+    public List<GameObject> affectedPrefabsA; // For RightHand primaryButton (A)
+    public List<GameObject> affectedPrefabsB; // For RightHand secondaryButton (B)
+    public List<GameObject> affectedPrefabsX; // For LeftHand primaryButton (X)
+    public List<GameObject> affectedPrefabsY; // For LeftHand secondaryButton (Y)
+
+    // Button state cache
     private bool leftPrimaryButtonLastState = false;
     private bool leftSecondaryButtonLastState = false;
     private bool rightPrimaryButtonLastState = false;
@@ -37,56 +41,55 @@ public class PortalAndParticleController : MonoBehaviour
     private void DetectButtonPresses()
     {
         UnityEngine.XR.InputDevice leftHandDevice, rightHandDevice;
-
         var devices = new List<UnityEngine.XR.InputDevice>();
         InputDevices.GetDevicesAtXRNode(XRNode.LeftHand, devices);
         leftHandDevice = devices.FirstOrDefault();
         InputDevices.GetDevicesAtXRNode(XRNode.RightHand, devices);
         rightHandDevice = devices.FirstOrDefault();
 
-        // 左手按钮检测
+        // Left Hand Button Detection
         if (leftHandDevice != null)
         {
-            bool primaryButtonValue;
-            if (leftHandDevice.TryGetFeatureValue(UnityEngine.XR.CommonUsages.primaryButton, out primaryButtonValue))
+            if (leftHandDevice.TryGetFeatureValue(UnityEngine.XR.CommonUsages.primaryButton, out bool primaryButtonValue))
             {
                 if (primaryButtonValue && !leftPrimaryButtonLastState)
                 {
-                    OnButtonPressed(particle3); // X button
+                    OnButtonPressed(particle3);
+                    ApplyRandomEffectToPrefabs(affectedPrefabsX); // X button
                 }
                 leftPrimaryButtonLastState = primaryButtonValue;
             }
 
-            bool secondaryButtonValue;
-            if (leftHandDevice.TryGetFeatureValue(UnityEngine.XR.CommonUsages.secondaryButton, out secondaryButtonValue))
+            if (leftHandDevice.TryGetFeatureValue(UnityEngine.XR.CommonUsages.secondaryButton, out bool secondaryButtonValue))
             {
                 if (secondaryButtonValue && !leftSecondaryButtonLastState)
                 {
-                    OnButtonPressed(particle4); // Y button
+                    OnButtonPressed(particle4);
+                    ApplyRandomEffectToPrefabs(affectedPrefabsY); // Y button
                 }
                 leftSecondaryButtonLastState = secondaryButtonValue;
             }
         }
 
-        // 右手按钮检测
+        // Right Hand Button Detection
         if (rightHandDevice != null)
         {
-            bool primaryButtonValue;
-            if (rightHandDevice.TryGetFeatureValue(UnityEngine.XR.CommonUsages.primaryButton, out primaryButtonValue))
+            if (rightHandDevice.TryGetFeatureValue(UnityEngine.XR.CommonUsages.primaryButton, out bool primaryButtonValue))
             {
                 if (primaryButtonValue && !rightPrimaryButtonLastState)
                 {
-                    OnButtonPressed(particle1); // A button
+                    OnButtonPressed(particle1);
+                    ApplyRandomEffectToPrefabs(affectedPrefabsA); // A button
                 }
                 rightPrimaryButtonLastState = primaryButtonValue;
             }
 
-            bool secondaryButtonValue;
-            if (rightHandDevice.TryGetFeatureValue(UnityEngine.XR.CommonUsages.secondaryButton, out secondaryButtonValue))
+            if (rightHandDevice.TryGetFeatureValue(UnityEngine.XR.CommonUsages.secondaryButton, out bool secondaryButtonValue))
             {
                 if (secondaryButtonValue && !rightSecondaryButtonLastState)
                 {
-                    OnButtonPressed(particle2); // B button
+                    OnButtonPressed(particle2);
+                    ApplyRandomEffectToPrefabs(affectedPrefabsB); // B button
                 }
                 rightSecondaryButtonLastState = secondaryButtonValue;
             }
@@ -107,13 +110,44 @@ public class PortalAndParticleController : MonoBehaviour
         ScalePortal(scaleFactor);
     }
 
+    private void ApplyRandomEffectToPrefabs(List<GameObject> prefabs)
+    {
+        // Apply random effect to 3D prefabs
+        foreach (var prefab in prefabs)
+        {
+            if (prefab != null)
+            {
+                int outcome = Random.Range(0, 3); // 0 = disappear, 1 = duplicate, 2 = scale and rotate
+
+                switch (outcome)
+                {
+                    case 0:
+                        // Disappear
+                        Destroy(prefab);
+                        Debug.Log("Destroyed: " + prefab.name);
+                        break;
+                    case 1:
+                        // Duplicate
+                        Instantiate(prefab, prefab.transform.position + Vector3.right * 1.5f, Quaternion.identity);
+                        Debug.Log("Duplicated: " + prefab.name);
+                        break;
+                    case 2:
+                        // Scale up and rotate
+                        prefab.transform.localScale *= 1.5f;
+                        prefab.transform.Rotate(Vector3.up, 180);
+                        Debug.Log("Scaled and Rotated: " + prefab.name);
+                        break;
+                }
+            }
+        }
+    }
+
     private void ScalePortal(float amount)
     {
         Vector3 currentScale = transform.localScale;
         Vector3 newScale = currentScale + new Vector3(amount, amount, amount);
         newScale = Vector3.Max(minScale, Vector3.Min(newScale, maxScale));
         transform.localScale = newScale;
-        Debug.Log($"Portal Scale: {newScale}");
 
         if (playerTransform != null)
         {
@@ -138,5 +172,4 @@ public class PortalAndParticleController : MonoBehaviour
             SceneManager.LoadScene(sceneName);
         }
     }
-    
 }
