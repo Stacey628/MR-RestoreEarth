@@ -9,6 +9,7 @@ public class PlayPowerController2 : MonoBehaviour
     public float scaleMultiplier = 2f; // 放大倍数
     public string interactableTag = "Interactable"; // 场景中可点击的物体标签
     public float particleLifetime = 2f; // 粒子效果的存在时间
+    public GameObject creatureName;
 
     [Header("Input Settings")]
     public OVRInput.Button abilityButton = OVRInput.Button.Two; // 默认是右手 B 按键
@@ -22,7 +23,7 @@ public class PlayPowerController2 : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         // 检查接触的对象是否是 JellyfishPrefab2
-        if (other.gameObject.name == "JellyfishPrefab2")
+        if (other.gameObject.name == "creatureName")
         {
             // 获得能力
             hasAbility = true;

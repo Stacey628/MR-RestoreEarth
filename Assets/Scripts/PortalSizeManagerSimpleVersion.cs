@@ -50,7 +50,7 @@ public class PortalSizeManagerSimpleVersion : MonoBehaviour
 
         // 移动 Portal 靠近玩家
         Vector3 directionToPlayer = (playerTransform.position - transform.position).normalized;
-        transform.position += directionToPlayer * amount * 0.2f; // 控制靠近速度
+        transform.position += directionToPlayer * amount * 0.1f; // 控制靠近速度
     }
 
     private void CheckPortalProximity()

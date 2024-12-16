@@ -21044,7 +21044,7 @@ MonoBehaviour:
   - {fileID: 688133266}
   - {fileID: 362285873}
   portalManager: {fileID: 225338205}
-  spawnInterval: 10
+  spawnInterval: 1
   playerProximityRange: 2
   objectTag: Interactable
 --- !u!4 &1016633064
@@ -32960,7 +32960,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 721321622957796349, guid: a80412cb535c245c69c268b43533a929, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -6.66
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 721321622957796349, guid: a80412cb535c245c69c268b43533a929, type: 3}
       propertyPath: m_LocalRotation.w
@@ -33104,9 +33104,9 @@ SceneRoots:
   - {fileID: 5598954070795325692}
   - {fileID: 5059437170689418245}
   - {fileID: 5844128286104081747}
-  - {fileID: 514828297}
-  - {fileID: 659665318}
-  - {fileID: 909715340}
   - {fileID: 1934072861}
   - {fileID: 1294744617}
   - {fileID: 893035203}
+  - {fileID: 514828297}
+  - {fileID: 659665318}
+  - {fileID: 909715340}
