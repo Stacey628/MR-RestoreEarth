@@ -1519,12 +1519,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ca6e1a44a9e54d8ea9ce27310113780, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scaleFactor: 0.2
+  scaleFactor: 0.5
   maxScale: {x: 300, y: 600, z: 150}
-  minScale: {x: 4, y: 8, z: 2}
+  minScale: {x: 1.400764, y: 2.490513, z: 0.684332}
   scaleButton: -1
   playerTransform: {fileID: 718827319}
-  triggerDistance: 2
+  triggerDistance: 10
   sceneName: universe
 --- !u!1 &228423578
 GameObject:
@@ -14614,6 +14614,7 @@ MonoBehaviour:
   scaleMultiplier: 2
   interactableTag: Interactable
   particleLifetime: 2
+  creatureName: {fileID: 0}
   abilityButton: 2
   rayLength: 100
   interactableLayer:
