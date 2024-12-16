@@ -17,9 +17,12 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/ParameciumDuplicate.unity
     guid: c04c62de0debc10489ce6baef7be6e88
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/FinalForTest.unity
     guid: 03b2a3e77202e43a2b0e4b6ca53502d5
+  - enabled: 1
+    path: Assets/Scenes/FinalForTest2.unity
+    guid: ebba2e267fc1041c7948602779627463
   - enabled: 1
     path: Assets/Scenes/universe.unity
     guid: 43d1d876c7c0745e98bcb41f24ba4be3
