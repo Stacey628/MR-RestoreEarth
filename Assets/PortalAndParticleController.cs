@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.InputSystem;
 using UnityEngine.XR;
 using System.Linq;
 
@@ -22,53 +21,60 @@ public class PortalAndParticleController : MonoBehaviour
     public ParticleSystem particle3; // For LeftHand primaryButton (X)
     public ParticleSystem particle4; // For LeftHand secondaryButton (Y)
 
+    void Start()
+    {
+        SetupParticleCollisions(particle1);
+        SetupParticleCollisions(particle2);
+        SetupParticleCollisions(particle3);
+        SetupParticleCollisions(particle4);
+    }
+
     void Update()
     {
         DetectButtonPresses();
         CheckPortalProximity();
     }
 
+    private void SetupParticleCollisions(ParticleSystem ps)
+    {
+        if (ps == null) return;
+
+        var collision = ps.collision;
+        collision.enabled = true;
+        collision.sendCollisionMessages = true;
+    }
+
     private void DetectButtonPresses()
     {
-        // Try to get the left and right hand controllers
+        var devices = new List<UnityEngine.XR.InputDevice>();
         UnityEngine.XR.InputDevice leftHandDevice, rightHandDevice;
 
-        var devices = new List<UnityEngine.XR.InputDevice>();
+        // Retrieve Left Hand Controller
         InputDevices.GetDevicesAtXRNode(XRNode.LeftHand, devices);
         leftHandDevice = devices.FirstOrDefault();
+
+        // Check buttons for the Left Hand Controller
+        if (leftHandDevice != null)
+        {
+            if (leftHandDevice.TryGetFeatureValue(UnityEngine.XR.CommonUsages.primaryButton, out bool leftPrimaryButtonValue) && leftPrimaryButtonValue)
+                OnButtonPressed(particle3); // X button assumed
+
+            if (leftHandDevice.TryGetFeatureValue(UnityEngine.XR.CommonUsages.secondaryButton, out bool leftSecondaryButtonValue) && leftSecondaryButtonValue)
+                OnButtonPressed(particle4); // Y button assumed
+        }
+
+        // Retrieve Right Hand Controller
         InputDevices.GetDevicesAtXRNode(XRNode.RightHand, devices);
         rightHandDevice = devices.FirstOrDefault();
 
-        // Left Hand - Check primary (X) and secondary (Y) button presses
-        if (leftHandDevice != null)
-        {
-            bool primaryButtonValue;
-            if (leftHandDevice.TryGetFeatureValue(UnityEngine.XR.CommonUsages.primaryButton, out primaryButtonValue) && primaryButtonValue)
-            {
-                OnButtonPressed(particle3); // X button
-            }
-
-            bool secondaryButtonValue;
-            if (leftHandDevice.TryGetFeatureValue(UnityEngine.XR.CommonUsages.secondaryButton, out secondaryButtonValue) && secondaryButtonValue)
-            {
-                OnButtonPressed(particle4); // Y button
-            }
-        }
-
-        // Right Hand - Check primary (A) and secondary (B) button presses
+        // Check buttons for the Right Hand Controller
         if (rightHandDevice != null)
         {
-            bool primaryButtonValue;
-            if (rightHandDevice.TryGetFeatureValue(UnityEngine.XR.CommonUsages.primaryButton, out primaryButtonValue) && primaryButtonValue)
-            {
-                OnButtonPressed(particle1); // A button
-            }
+            if (rightHandDevice.TryGetFeatureValue(UnityEngine.XR.CommonUsages.primaryButton, out bool rightPrimaryButtonValue) && rightPrimaryButtonValue)
+                OnButtonPressed(particle1); // A button assumed
 
-            bool secondaryButtonValue;
-            if (rightHandDevice.TryGetFeatureValue(UnityEngine.XR.CommonUsages.secondaryButton, out secondaryButtonValue) && secondaryButtonValue)
-            {
-                OnButtonPressed(particle2); // B button
-            }
+            if (rightHandDevice.TryGetFeatureValue(UnityEngine.XR.CommonUsages.secondaryButton, out bool rightSecondaryButtonValue) && rightSecondaryButtonValue)
+                OnButtonPressed(particle2); // B button assumed
         }
     }
 
@@ -114,6 +120,29 @@ public class PortalAndParticleController : MonoBehaviour
         {
             Debug.Log("Portal is close to the player. Loading scene: " + sceneName);
             SceneManager.LoadScene(sceneName);
+        }
+    }
+
+    private void OnParticleCollision(GameObject other)
+    {
+        // Perform effect on collision
+        int outcome = Random.Range(0, 3); // 0 = disappear, 1 = duplicate, 2 = scale and rotate
+
+        switch (outcome)
+        {
+            case 0:
+                // Disappear
+                Destroy(other);
+                break;
+            case 1:
+                // Duplicate
+                Instantiate(other, other.transform.position + Vector3.right * 1.5f, Quaternion.identity);
+                break;
+            case 2:
+                // Scale up and rotate
+                other.transform.localScale *= 1.5f;
+                other.transform.Rotate(Vector3.up, 180);
+                break;
         }
     }
 }
