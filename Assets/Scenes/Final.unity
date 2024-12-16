@@ -14224,6 +14224,7 @@ GameObject:
   - component: {fileID: 632017773}
   - component: {fileID: 632017772}
   - component: {fileID: 632017778}
+  - component: {fileID: 632017779}
   m_Layer: 0
   m_Name: Portal Sphere2
   m_TagString: Untagged
@@ -14334,7 +14335,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 632017770}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3ca6e1a44a9e54d8ea9ce27310113780, type: 3}
   m_Name: 
@@ -14450,6 +14451,27 @@ MonoBehaviour:
   expansionDuration: 20
   portalObject: {fileID: 1164771461}
   portalCenter: {fileID: 1657436443}
+--- !u!114 &632017779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 632017770}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe91c5c946e2a41a6826de9528876c1c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scaleFactor: 0.1
+  maxScale: {x: 5, y: 0.1, z: 5}
+  minScale: {x: 0.5, y: 0.1, z: 0.5}
+  playerTransform: {fileID: 718827319}
+  triggerDistance: 1.5
+  sceneName: universe
+  particle1: {fileID: 514828296}
+  particle2: {fileID: 659665317}
+  particle3: {fileID: 909715339}
 --- !u!1 &632554505
 GameObject:
   m_ObjectHideFlags: 0
