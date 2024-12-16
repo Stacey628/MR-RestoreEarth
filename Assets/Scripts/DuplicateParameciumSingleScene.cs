@@ -1,12 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit; // Correct namespace
-using UnityEngine.InputSystem; // For Input Actions
 
 /// <summary>
-/// Manages duplication and behavior of Paramecium objects around a portal,
-/// and handles shooting of SuperPower_1 particles using the Oculus Quest 3 controller.
+/// Manages duplication and behavior of Paramecium objects around a portal.
 /// </summary>
 public class DuplicateParameciumSingleScene : MonoBehaviour
 {
@@ -28,23 +25,11 @@ public class DuplicateParameciumSingleScene : MonoBehaviour
     [Range(0f, 1f)]
     public float reductionPercentage = 0.8f;     // 80% reduction
 
-    [Header("Super Power Shooting Settings")]
-    public GameObject superPowerPrefab;          // Assign your SuperPower_1 prefab here
-    public Transform shootSpawnPoint;            // The point from where the super power is spawned
-    public float shootForce = 1000f;             // Force applied to the super power projectile
-    public float shootCooldown = 0.5f;           // Cooldown time between shots
-
     private float lastPortalSize;                                 // Store the last known portal size
     private List<GameObject> parameciumObjects = new List<GameObject>(); // Track all duplicated objects
     private bool portalEnlarged = false;                         // Flag to check if the portal size has increased
     private Coroutine decreaseCoroutine;                         // Store the ongoing decrease coroutine
     private Coroutine gradualAddCoroutine;                       // Coroutine to gradually add duplicates
-
-    // Input Action for Shooting
-    [Header("Input Settings")]
-    public InputActionProperty shootAction; // Assign the "A" button action in the Inspector
-
-    private float lastShootTime = -Mathf.Infinity;               // Time when the last shot was fired
 
     void Start()
     {
@@ -57,12 +42,6 @@ public class DuplicateParameciumSingleScene : MonoBehaviour
             return;
         }
 
-        if (superPowerPrefab == null || shootSpawnPoint == null)
-        {
-            Debug.LogError("Missing Super Power references! Please assign the SuperPower Prefab and Shoot Spawn Point in the Inspector.");
-            return;
-        }
-
         // Initialize the portal size
         lastPortalSize = portalTransform.localScale.x;
 
@@ -71,38 +50,9 @@ public class DuplicateParameciumSingleScene : MonoBehaviour
 
         // Start gradual addition of duplicates
         gradualAddCoroutine = StartCoroutine(GraduallyAddParameciumObjects());
-
-        // Enable the shoot action
-        if (shootAction != null)
-        {
-            shootAction.action.Enable();
-            shootAction.action.performed += ctx => OnShoot();
-        }
-        else
-        {
-            Debug.LogWarning("ShootAction is not assigned. Please assign it in the Inspector.");
-        }
-    }
-
-    void OnDestroy()
-    {
-        // Disable the shoot action to prevent memory leaks
-        if (shootAction != null)
-        {
-            shootAction.action.performed -= ctx => OnShoot();
-            shootAction.action.Disable();
-        }
     }
 
     void Update()
-    {
-        HandlePortalSizeChange();
-    }
-
-    /// <summary>
-    /// Handles changes in the portal size and triggers reduction of duplicates if enlarged.
-    /// </summary>
-    private void HandlePortalSizeChange()
     {
         float currentPortalSize = portalTransform.localScale.x;
 
@@ -139,51 +89,10 @@ public class DuplicateParameciumSingleScene : MonoBehaviour
     }
 
     /// <summary>
-    /// Called when the shoot action is performed (A button pressed).
-    /// </summary>
-    private void OnShoot()
-    {
-        // Check for cooldown
-        if (Time.time - lastShootTime >= shootCooldown)
-        {
-            ShootSuperPower();
-            lastShootTime = Time.time;
-        }
-    }
-
-    /// <summary>
-    /// Shoots the SuperPower_1 particle from the shoot spawn point.
-    /// </summary>
-    private void ShootSuperPower()
-    {
-        if (superPowerPrefab != null && shootSpawnPoint != null)
-        {
-            // Instantiate the super power at the spawn point's position and rotation
-            GameObject superPower = Instantiate(superPowerPrefab, shootSpawnPoint.position, shootSpawnPoint.rotation);
-
-            // Add force to the super power's Rigidbody to propel it forward
-            Rigidbody rb = superPower.GetComponent<Rigidbody>();
-            if (rb != null)
-            {
-                rb.AddForce(shootSpawnPoint.forward * shootForce);
-                Debug.Log($"Shot {superPower.name} from {shootSpawnPoint.position} with force {shootForce}.");
-            }
-            else
-            {
-                Debug.LogWarning("SuperPower prefab does not have a Rigidbody component.");
-            }
-        }
-        else
-        {
-            Debug.LogWarning("SuperPowerPrefab or ShootSpawnPoint is not assigned.");
-        }
-    }
-
-    /// <summary>
     /// Duplicates a specified number of Paramecium objects around the portal.
     /// </summary>
     /// <param name="count">Number of duplicates to create.</param>
-    public void DuplicateParameciumObjects(int count)
+    private void DuplicateParameciumObjects(int count)
     {
         Debug.Log($"Duplicating {count} objects...");
 
@@ -233,7 +142,7 @@ public class DuplicateParameciumSingleScene : MonoBehaviour
         int addedCount = 0;
         float currentInterval = duplicationInterval;
 
-        while (parameciumObjects.Count < maxDuplicates && !portalEnlarged)
+        while (parameciumObjects.Count < maxDuplicates)
         {
             // Calculate the proportion of duplicates added
             float proportion = (float)parameciumObjects.Count / maxDuplicates;
@@ -315,61 +224,6 @@ public class DuplicateParameciumSingleScene : MonoBehaviour
         yield return new WaitForSeconds(delay);
         portalEnlarged = false;
         Debug.Log("Portal enlargement flag reset.");
-    }
-
-    /// <summary>
-    /// Public method to trigger duplication when a Paramecium is hit by SuperPower.
-    /// </summary>
-    public void OnParameciumHit()
-    {
-        if (!portalEnlarged)
-        {
-            Debug.Log("Paramecium hit by SuperPower. Triggering duplication.");
-            DuplicateParameciumObjects(initialDuplicateCount);
-        }
-        else
-        {
-            Debug.Log("Portal is enlarged. Duplication is currently stopped.");
-        }
-    }
-}
-
-/// <summary>
-/// Handles collision detection for the SuperPower_1 projectile.
-/// When it collides with a Paramecium, it notifies the DuplicateParameciumSingleScene to duplicate Paramecia.
-/// </summary>
-public class SuperPowerProjectile : MonoBehaviour
-{
-    [Header("Collision Settings")]
-    public string parameciumTag = "Paramecium"; // Tag assigned to Paramecium objects
-
-    private DuplicateParameciumSingleScene duplicationManager; // Reference to the duplication manager
-
-    void Start()
-    {
-        // Find the duplication manager in the scene
-        duplicationManager = FindObjectOfType<DuplicateParameciumSingleScene>();
-        if (duplicationManager == null)
-        {
-            Debug.LogError("DuplicateParameciumSingleScene not found in the scene.");
-        }
-    }
-
-    void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag(parameciumTag))
-        {
-            Debug.Log($"SuperPower collided with {collision.gameObject.name}. Triggering duplication.");
-
-            // Notify the duplication manager to duplicate Paramecia
-            if (duplicationManager != null)
-            {
-                duplicationManager.OnParameciumHit();
-            }
-
-            // Destroy the SuperPower projectile after collision
-            Destroy(gameObject);
-        }
     }
 }
 
