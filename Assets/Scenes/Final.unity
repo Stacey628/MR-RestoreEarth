@@ -1622,6 +1622,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SunwukongPrefab2
       objectReference: {fileID: 0}
+    - target: {fileID: 2169205438843018791, guid: 0d3ef438fd9cf4a0baa2d2afd9f270ef, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7044071167690529938, guid: 0d3ef438fd9cf4a0baa2d2afd9f270ef, type: 3}
       propertyPath: m_IsKinematic
       value: 0
@@ -11903,9 +11907,9 @@ ParticleSystem:
         m_NumAlphaKeys: 2
     range: {x: 0, y: 1}
   CollisionModule:
-    enabled: 0
+    enabled: 1
     serializedVersion: 4
-    type: 0
+    type: 1
     collisionMode: 0
     colliderForce: 0
     multiplyColliderForceByParticleSize: 0
@@ -12080,7 +12084,7 @@ ParticleSystem:
     maxCollisionShapes: 256
     quality: 0
     voxelSize: 0.5
-    collisionMessages: 0
+    collisionMessages: 1
     collidesWithDynamic: 1
     interiorCollisions: 0
   TriggerModule:
@@ -18258,9 +18262,9 @@ ParticleSystem:
         m_NumAlphaKeys: 2
     range: {x: 0, y: 1}
   CollisionModule:
-    enabled: 0
+    enabled: 1
     serializedVersion: 4
-    type: 0
+    type: 1
     collisionMode: 0
     colliderForce: 0
     multiplyColliderForceByParticleSize: 0
@@ -18435,7 +18439,7 @@ ParticleSystem:
     maxCollisionShapes: 256
     quality: 0
     voxelSize: 0.5
-    collisionMessages: 0
+    collisionMessages: 1
     collidesWithDynamic: 1
     interiorCollisions: 0
   TriggerModule:
@@ -24837,9 +24841,9 @@ ParticleSystem:
         m_NumAlphaKeys: 2
     range: {x: 0, y: 1}
   CollisionModule:
-    enabled: 0
+    enabled: 1
     serializedVersion: 4
-    type: 0
+    type: 1
     collisionMode: 0
     colliderForce: 0
     multiplyColliderForceByParticleSize: 0
@@ -25014,7 +25018,7 @@ ParticleSystem:
     maxCollisionShapes: 256
     quality: 0
     voxelSize: 0.5
-    collisionMessages: 0
+    collisionMessages: 1
     collidesWithDynamic: 1
     interiorCollisions: 0
   TriggerModule:
@@ -27032,6 +27036,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1822260871}
     m_Modifications:
+    - target: {fileID: 91464194604555763, guid: 653eee5abf3374941b3d19c7b7e7a998, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2408532215733435257, guid: 653eee5abf3374941b3d19c7b7e7a998, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.0174899
@@ -27080,6 +27088,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ParameciumPrefab2
       objectReference: {fileID: 0}
+    - target: {fileID: 4081066069021619026, guid: 653eee5abf3374941b3d19c7b7e7a998, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5520003961898888049, guid: 653eee5abf3374941b3d19c7b7e7a998, type: 3}
       propertyPath: playerTransform
       value: 
@@ -27092,7 +27104,8 @@ PrefabInstance:
       propertyPath: minDistanceToPlayer
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1909584569195634920, guid: 653eee5abf3374941b3d19c7b7e7a998, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -28312,15 +28325,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8502680836052293607, guid: a80412cb535c245c69c268b43533a929, type: 3}
       propertyPath: m_Size.x
-      value: 3
+      value: 0.9914026
       objectReference: {fileID: 0}
     - target: {fileID: 8502680836052293607, guid: a80412cb535c245c69c268b43533a929, type: 3}
       propertyPath: m_Size.y
-      value: 3
+      value: 0.9231767
       objectReference: {fileID: 0}
     - target: {fileID: 8502680836052293607, guid: a80412cb535c245c69c268b43533a929, type: 3}
       propertyPath: m_Size.z
-      value: 3
+      value: 1.0462801
+      objectReference: {fileID: 0}
+    - target: {fileID: 8502680836052293607, guid: a80412cb535c245c69c268b43533a929, type: 3}
+      propertyPath: m_Center.x
+      value: 0.054497957
+      objectReference: {fileID: 0}
+    - target: {fileID: 8502680836052293607, guid: a80412cb535c245c69c268b43533a929, type: 3}
+      propertyPath: m_Center.y
+      value: -0.030276507
+      objectReference: {fileID: 0}
+    - target: {fileID: 8502680836052293607, guid: a80412cb535c245c69c268b43533a929, type: 3}
+      propertyPath: m_Center.z
+      value: -0.006568879
       objectReference: {fileID: 0}
     - target: {fileID: 8502680836052293607, guid: a80412cb535c245c69c268b43533a929, type: 3}
       propertyPath: m_IsTrigger
